@@ -783,3 +783,303 @@
     }
   </style>
 </head>
+<body>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <div class="aurora-bg">
+    <div class="aurora-layer"></div>
+  </div>
+
+  <!-- ========== NAV ========== -->
+  <nav>
+    <a href="index.html" class="logo">Norðurljós <span>Manga</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Heim</a></li>
+      <li><a href="translation.html">Þýðingaskrá</a></li>
+      <li><a href="blog.html">Blogg</a></li>
+      <li><a href="gallery.html">Gallerí</a></li>
+      <li><a href="contact.html">Hafa Samband</a></li>
+    </ul>
+    <div class="nav-lang">IS / JP</div>
+  </nav>
+
+  <!-- ========== HERO ========== -->
+  <section class="hero">
+    <p class="hero-label">Japanski Teikniþáttar á Íslensku — アイスランド語漫画</p>
+    <h1 class="hero-title">Norðurljós<br>Manga</h1>
+    <p class="hero-title-is">Þar sem austurlæg list hittir norðurljósin</p>
+    <p class="hero-desc">
+      極北の光の下に広がる、漫画とアイスランドが交差する場所へ。<br>
+      日本の漫画をアイスランド語に翻訳し、北欧の世界へ届けます。
+    </p>
+    <div class="hero-actions">
+      <a href="gallery.html" class="btn-primary"><span>Gallerí Skoða</span></a>
+      <a href="translation.html" class="btn-ghost">Þýðingaskrá</a>
+    </div>
+
+    <div class="scroll-indicator">
+      <div class="scroll-line"></div>
+      <span>Fletta Niður</span>
+    </div>
+  </section>
+
+  <!-- MOUNTAIN SVG DIVIDER -->
+  <div class="mountain-divider">
+    <svg viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,80 L120,40 L200,65 L320,10 L440,55 L560,20 L680,50 L760,5 L880,45 L1000,15 L1120,60 L1240,25 L1360,55 L1440,30 L1440,120 L0,120 Z"
+            fill="rgba(232,240,245,0.02)" stroke="rgba(232,240,245,0.06)" stroke-width="1"/>
+      <path d="M0,95 L80,70 L180,85 L300,50 L420,75 L540,40 L660,68 L780,30 L900,70 L1020,48 L1140,75 L1260,45 L1380,72 L1440,55 L1440,120 L0,120 Z"
+            fill="rgba(78,205,196,0.015)" stroke="rgba(78,205,196,0.04)" stroke-width="1"/>
+    </svg>
+  </div>
+
+  <!-- ========== FEATURED MANGA ========== -->
+  <section class="section">
+    <div class="section-header reveal">
+      <span class="section-number">01 —</span>
+      <div>
+        <h2 class="section-title">Nýjustu Þýðingar</h2>
+        <p class="section-title-is">最新翻訳作品</p>
+      </div>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="manga-grid reveal">
+      <!-- Featured Large Card -->
+      <div class="manga-card featured" style="grid-row: span 2;">
+        <div class="card-img-wrap" style="height:100%;">
+          <div class="card-placeholder" style="background: linear-gradient(160deg, #0d1b2a 0%, #1a3a4a 40%, #0f2030 100%); min-height: 600px;">
+            <svg viewBox="0 0 400 600" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+              <!-- Aurora streaks -->
+              <defs>
+                <linearGradient id="aurora-g1" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" style="stop-color:#4ecdc4;stop-opacity:0.15"/>
+                  <stop offset="100%" style="stop-color:#7b6fa0;stop-opacity:0.05"/>
+                </linearGradient>
+              </defs>
+              <ellipse cx="200" cy="150" rx="300" ry="80" fill="url(#aurora-g1)" opacity="0.6"/>
+              <ellipse cx="150" cy="200" rx="250" ry="60" fill="#4ecdc4" opacity="0.04"/>
+              <!-- Mountain silhouette -->
+              <path d="M0,480 L80,320 L130,380 L200,260 L270,350 L320,290 L400,420 L400,600 L0,600 Z" fill="#0a141f" opacity="0.8"/>
+              <path d="M0,520 L60,430 L120,470 L200,380 L280,440 L360,390 L400,460 L400,600 L0,600 Z" fill="#061018" opacity="0.9"/>
+              <!-- Stars -->
+              <circle cx="50" cy="80" r="1" fill="white" opacity="0.4"/>
+              <circle cx="130" cy="40" r="1.5" fill="white" opacity="0.5"/>
+              <circle cx="250" cy="60" r="1" fill="white" opacity="0.3"/>
+              <circle cx="340" cy="30" r="1.5" fill="white" opacity="0.6"/>
+              <circle cx="380" cy="90" r="1" fill="white" opacity="0.4"/>
+              <circle cx="90" cy="130" r="1" fill="white" opacity="0.3"/>
+              <circle cx="310" cy="100" r="1.5" fill="white" opacity="0.5"/>
+              <!-- Character silhouette -->
+              <circle cx="200" cy="310" r="22" fill="#c5dce8" opacity="0.12"/>
+              <rect x="188" y="332" width="24" height="50" rx="4" fill="#c5dce8" opacity="0.1"/>
+              <!-- Text -->
+              <text x="200" y="240" text-anchor="middle" font-family="serif" font-size="14" fill="rgba(232,240,245,0.15)" letter-spacing="3">COVER ART</text>
+            </svg>
+          </div>
+        </div>
+        <div class="card-overlay" style="opacity:0.8;">
+          <p class="card-tag">Þýðing — 翻訳作品</p>
+          <h3 class="card-title">Norðurljós<br>Kísuvörður</h3>
+          <p class="card-title-is">北極光の守護者</p>
+          <p class="card-meta">Bindi 1 — Kafli 1–12 &nbsp;·&nbsp; 2024</p>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="manga-card">
+        <div class="card-img-wrap">
+          <div class="card-placeholder" style="background: linear-gradient(135deg, #1a0d2e 0%, #2c1a3d 100%); min-height: 260px;">
+            <svg viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%;">
+              <path d="M0,200 L60,150 L120,170 L200,110 L300,160 L300,260 L0,260 Z" fill="#0a0612" opacity="0.9"/>
+              <ellipse cx="150" cy="80" rx="180" ry="50" fill="#c47aa3" opacity="0.07"/>
+              <circle cx="60" cy="50" r="1" fill="white" opacity="0.5"/>
+              <circle cx="200" cy="30" r="1.5" fill="white" opacity="0.4"/>
+              <circle cx="270" cy="70" r="1" fill="white" opacity="0.6"/>
+            </svg>
+          </div>
+        </div>
+        <div class="card-overlay">
+          <p class="card-tag">Æfintýri — 冒険</p>
+          <h3 class="card-title">Ísalög</h3>
+          <p class="card-title-is">氷の歌</p>
+          <p class="card-meta">Bindi 2 — 2024</p>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="manga-card">
+        <div class="card-img-wrap">
+          <div class="card-placeholder" style="background: linear-gradient(135deg, #0d1f0e 0%, #1a3d1c 100%); min-height: 260px;">
+            <svg viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%;">
+              <path d="M0,180 L100,120 L180,150 L240,100 L300,130 L300,260 L0,260 Z" fill="#040f05" opacity="0.9"/>
+              <ellipse cx="150" cy="70" rx="200" ry="45" fill="#4ecdc4" opacity="0.06"/>
+              <circle cx="40" cy="40" r="1.5" fill="white" opacity="0.4"/>
+              <circle cx="220" cy="25" r="1" fill="white" opacity="0.5"/>
+              <circle cx="280" cy="55" r="1.5" fill="white" opacity="0.3"/>
+            </svg>
+          </div>
+        </div>
+        <div class="card-overlay">
+          <p class="card-tag">Drama — ドラマ</p>
+          <h3 class="card-title">Mosavegur</h3>
+          <p class="card-title-is">苔の道</p>
+          <p class="card-meta">Bindi 1 — 2025</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== ABOUT STRIP ========== -->
+  <div class="about-strip reveal">
+    <div class="about-text">
+      <h2>
+        このサイトについて
+        <em>Um Þennan Vef</em>
+      </h2>
+      <p>
+        Norðurljós Manga は、日本の漫画をアイスランド語に翻訳・紹介するプロジェクトです。アイスランドの風景と日本のストーリーテリングが融合する、唯一無二の文化的架け橋を目指しています。
+      </p>
+      <p>
+        Þetta verkefni er tileinkað þeim sem unna bæði japönsku menningu og íslenskri tungu — brú milli tveggja heimshluta.
+      </p>
+    </div>
+    <div class="about-divider"></div>
+    <div class="about-stats">
+      <div class="stat">
+        <div class="stat-num">48</div>
+        <div class="stat-label">翻訳済<span class="stat-label-is">Þýddar Blaðsíður</span></div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">6</div>
+        <div class="stat-label">作品数<span class="stat-label-is">Mangaseríur</span></div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">3</div>
+        <div class="stat-label">翻訳者<span class="stat-label-is">Þýðendur</span></div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">∞</div>
+        <div class="stat-label">情熱<span class="stat-label-is">Ástríða</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== NEWS / BLOG ========== -->
+  <section class="news-section">
+    <div class="section-header reveal">
+      <span class="section-number">02 —</span>
+      <div>
+        <h2 class="section-title">Nýjustu Færslur</h2>
+        <p class="section-title-is">最新ブログ記事</p>
+      </div>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="news-list reveal">
+      <div class="news-item">
+        <div class="news-date">2025年 5月</div>
+        <h3 class="news-title">アイスランド語における漫画翻訳の難しさ</h3>
+        <p class="news-title-is">Vandinn við þýðingu manga á íslensku</p>
+        <p class="news-excerpt">擬音語、文化的なニュアンス、縦書きから横書きへの変換……アイスランド語翻訳が直面する独自の課題について考察します。</p>
+        <a href="blog.html" class="news-read">Lesa Meira</a>
+      </div>
+      <div class="news-item">
+        <div class="news-date">2025年 4月</div>
+        <h3 class="news-title">新シリーズ「氷の歌」翻訳開始</h3>
+        <p class="news-title-is">Byrjað að þýða "Ísalög"</p>
+        <p class="news-excerpt">待望の新シリーズの翻訳がスタート。ファンタジー要素とアイスランドの伝説が交差するこの作品に挑戦します。</p>
+        <a href="blog.html" class="news-read">Lesa Meira</a>
+      </div>
+      <div class="news-item">
+        <div class="news-date">2025年 3月</div>
+        <h3 class="news-title">翻訳チームに新メンバーが加入</h3>
+        <p class="news-title-is">Nýr þýðandi í liðið</p>
+        <p class="news-excerpt">アイスランド大学で日本語を学ぶ新しい翻訳者が仲間に。チームの紹介と今後のプロジェクト計画についてお知らせします。</p>
+        <a href="blog.html" class="news-read">Lesa Meira</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== TRANSLATION LOG CALLOUT ========== -->
+  <div class="log-callout reveal">
+    <div class="log-callout-left">
+      <h3>Þýðingaskrá — 翻訳ログ</h3>
+      <p>Öll þýðingaferli skráð og aðgengileg</p>
+      <span>
+        翻訳の進捗、用語集、版権情報など、すべての翻訳プロセスを透明に記録したログページ。<br>
+        Allar þýðingar eru skráðar með nákvæmum upplýsingum um framvindu og réttindi.
+      </span>
+    </div>
+    <div class="log-callout-right">
+      <a href="translation.html" class="btn-primary"><span>Þýðingaskrá Skoða</span></a>
+    </div>
+  </div>
+
+  <!-- ========== FOOTER ========== -->
+  <footer>
+    <div class="footer-logo">Norðurljós <span>Manga</span></div>
+    <ul class="footer-nav">
+      <li><a href="index.html">Heim</a></li>
+      <li><a href="translation.html">Þýðingaskrá</a></li>
+      <li><a href="blog.html">Blogg</a></li>
+      <li><a href="gallery.html">Gallerí</a></li>
+      <li><a href="contact.html">Hafa Samband</a></li>
+    </ul>
+    <p class="footer-copy">© 2025 Norðurljós Manga — アイスランド語漫画プロジェクト</p>
+  </footer>
+
+  <script>
+    // Custom cursor
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX;
+      my = e.clientY;
+      cursor.style.left = mx - 5 + 'px';
+      cursor.style.top  = my - 5 + 'px';
+    });
+
+    function animateRing() {
+      rx += (mx - rx) * 0.12;
+      ry += (my - ry) * 0.12;
+      ring.style.left = rx - 18 + 'px';
+      ring.style.top  = ry - 18 + 'px';
+      requestAnimationFrame(animateRing);
+    }
+    animateRing();
+
+    document.querySelectorAll('a, button, .manga-card, .news-item').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.style.transform = 'scale(2)';
+        cursor.style.background = '#7b6fa0';
+        ring.style.width = '52px';
+        ring.style.height = '52px';
+        ring.style.borderColor = 'rgba(123,111,160,0.3)';
+      });
+      el.addEventListener('mouseleave', () => {
+        cursor.style.transform = 'scale(1)';
+        cursor.style.background = '#4ecdc4';
+        ring.style.width = '36px';
+        ring.style.height = '36px';
+        ring.style.borderColor = 'rgba(78,205,196,0.4)';
+      });
+    });
+
+    // Intersection Observer for reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        }
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
