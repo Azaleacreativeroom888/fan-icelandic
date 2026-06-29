@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blogg — Norðurljós Manga</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --ice: #e8f0f5;
+      --aurora-green: #4ecdc4;
+      --aurora-violet: #7b6fa0;
+      --midnight: #0d1b2a;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background-color: var(--midnight);
+      color: var(--ice);
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at 20% 0%, rgba(78,205,196,0.05) 0%, transparent 60%),
+                  radial-gradient(ellipse at 80% 100%, rgba(123,111,160,0.05) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 28px 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(232,240,245,0.06);
+      backdrop-filter: blur(12px);
+      background: rgba(13,27,42,0.6);
+    }
+    .logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--ice);
+      text-decoration: none;
+    }
+    .logo span { color: var(--aurora-green); font-style: italic; }
+
+    .nav-links { display: flex; gap: 40px; list-style: none; }
+    .nav-links a {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.9rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(232,240,245,0.5);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--ice); }
+    .nav-links a.active { border-bottom: 1px solid var(--aurora-green); padding-bottom: 2px; }
+
+    /* MAIN */
+    main {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 160px 24px 120px;
+    }
+
+    /* PAGE HEADING */
+    .page-heading {
+      margin-bottom: 80px;
+      border-bottom: 1px solid rgba(232,240,245,0.08);
+      padding-bottom: 40px;
+    }
+    .page-heading h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.4rem;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      margin-bottom: 4px;
+    }
+    .page-heading p {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      font-style: italic;
+      color: rgba(232,240,245,0.35);
+    }
+
+    /* ENTRIES */
+    .entry {
+      margin-bottom: 64px;
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 0 40px;
+    }
+
+    .entry-date {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.15em;
+      color: var(--aurora-green);
+      padding-top: 4px;
+      white-space: nowrap;
+    }
+
+    .entry-body {
+      font-size: 0.92rem;
+      line-height: 2.0;
+      color: rgba(232,240,245,0.72);
+      border-top: 1px solid rgba(232,240,245,0.07);
+      padding-top: 4px;
+    }
+    .entry-body p + p {
+      margin-top: 1em;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid rgba(232,240,245,0.06);
+      padding: 40px 56px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .footer-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      color: rgba(232,240,245,0.3);
+    }
+    .footer-logo span { color: var(--aurora-green); font-style: italic; }
+    .footer-copy {
+      font-size: 0.72rem;
+      color: rgba(232,240,245,0.18);
+      letter-spacing: 0.05em;
+    }
+
+    @media (max-width: 680px) {
+      nav { padding: 20px 20px; }
+      .nav-links { display: none; }
+      main { padding: 120px 20px 80px; }
+      .entry { grid-template-columns: 1fr; gap: 8px 0; }
+      .entry-date { padding-top: 0; }
+      .entry-body { border-top: none; border-left: 1px solid rgba(232,240,245,0.07); padding: 0 0 0 16px; }
+      footer { flex-direction: column; gap: 12px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="logo">Norðurljós <span>Manga</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Heim</a></li>
+      <li><a href="translation.html">Þýðingaskrá</a></li>
+      <li><a href="blog.html" class="active">Blogg</a></li>
+      <li><a href="gallery.html">Gallerí</a></li>
+      <li><a href="contact.html">Hafa Samband</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <div class="page-heading">
+      <h1>Blogg</h1>
+      <p>Dagbók</p>
+    </div>
+
+    <div class="entry">
+      <div class="entry-date">2025.05.18</div>
+      <div class="entry-body">
+        <p>Þýðing á 3. þætti myndasögunnar er lokið. Það eru nokkur orð á íslensku sem þýða einmanaleika, en ég hugsaði lengi um hvaða orð kæmist næst tilfinningum söguhetjunnar. Að lokum valdi ég <em>einsemd</em> — þá þöglu, dimmu tilfinningu sem leggst yfir mann í kyrrð.</p>
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="entry-date">2025.05.03</div>
+      <div class="entry-body">
+        <p>Þýðingarvinnan heldur áfram þrátt fyrir frídagana. Flókin fallbeyging íslenskunnar reynir á þolinmæðina í dag — en það er einmitt það sem gerir þetta spennandi.</p>
+        <p>Teiknaði tvær nýjar myndir fyrir gallerísíðuna — silúettar persóna á móti norðurljósum. Mér líkar vel við þær.</p>
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="entry-date">2025.04.20</div>
+      <div class="entry-body">
+        <p>Byrjaði að þýða nýja seríu. Þar sem hún er fantasíusaga þarf að finna íslenskar hljóðlegar hliðstæður fyrir eignarfornöfn — ég reyni að fá þau til að hljóma náttúrulega á íslensku.</p>
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="entry-date">2025.04.07</div>
+      <div class="entry-body">
+        <p>Vefsíðan er komin í loftið. Efnið er enn lítið en ég ætla að byggja það upp smám saman. Vonandi finnast einhverjir sem hafa áhuga á þessari blöndu af íslensku og japönsku myndasögu.</p>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    <div class="footer-logo">Norðurljós <span>Manga</span></div>
+    <p class="footer-copy">© 2025 Norðurljós Manga</p>
+  </footer>
+
+</body>
+</html>
