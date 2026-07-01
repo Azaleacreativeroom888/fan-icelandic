@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gallerí — Norðurljós Manga</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --ice: #e8f0f5;
+      --midnight: #0d1b2a;
+      --aurora-green: #4ecdc4;
+      --aurora-violet: #7b6fa0;
+      --aurora-pink: #c47aa3;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--midnight);
+      color: var(--ice);
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    .cursor {
+      width: 10px; height: 10px;
+      background: var(--aurora-green); border-radius: 50%;
+      position: fixed; pointer-events: none; z-index: 9999;
+      transition: transform 0.15s ease, background 0.3s ease;
+      mix-blend-mode: screen;
+    }
+    .cursor-ring {
+      width: 36px; height: 36px;
+      border: 1px solid rgba(78,205,196,0.4); border-radius: 50%;
+      position: fixed; pointer-events: none; z-index: 9998;
+      transition: width 0.3s ease, height 0.3s ease, border-color 0.3s ease;
+    }
+
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background: radial-gradient(ellipse at 10% 0%, rgba(78,205,196,0.05) 0%, transparent 55%),
+                  radial-gradient(ellipse at 90% 100%, rgba(123,111,160,0.06) 0%, transparent 55%);
+      pointer-events: none; z-index: 0;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 28px 56px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid rgba(232,240,245,0.06);
+      backdrop-filter: blur(12px);
+      background: rgba(13,27,42,0.6);
+    }
+    .logo {
+      font-size: 1.3rem; font-weight: 600; letter-spacing: 0.04em;
+      color: var(--ice); text-decoration: none;
+    }
+    .logo span { color: var(--aurora-green); font-style: italic; }
+    .nav-links { display: flex; gap: 48px; list-style: none; }
+    .nav-links a {
+      font-size: 0.9rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(232,240,245,0.55); text-decoration: none; transition: color 0.3s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -4px; left: 0;
+      width: 0; height: 1px; background: var(--aurora-green); transition: width 0.3s;
+    }
+    .nav-links a:hover { color: var(--ice); }
+    .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+    .nav-links a.active { color: var(--ice); }
+
+    /* PAGE HEADER */
+    .page-header {
+      position: relative; z-index: 10;
+      padding: 160px 56px 72px;
+      border-bottom: 1px solid rgba(232,240,245,0.06);
+      display: flex; align-items: flex-end; justify-content: space-between; gap: 40px;
+    }
+    .page-header-left h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.8rem, 6vw, 5rem); font-weight: 700;
+      letter-spacing: -0.02em; line-height: 1; margin-bottom: 10px;
+    }
+    .page-header-left p {
+      font-size: 1.1rem; font-style: italic; color: rgba(232,240,245,0.4);
+    }
+
+    /* FILTER */
+    .filter-bar {
+      display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end;
+    }
+    .filter-btn {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.8rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: rgba(232,240,245,0.45);
+      background: transparent;
+      border: 1px solid rgba(232,240,245,0.1);
+      padding: 8px 20px; cursor: none;
+      transition: all 0.25s ease;
+    }
+    .filter-btn:hover { color: var(--ice); border-color: rgba(232,240,245,0.3); }
+    .filter-btn.active {
+      color: var(--midnight); background: var(--aurora-green);
+      border-color: var(--aurora-green);
+    }
+
+    /* GALLERY GRID */
+    .gallery-wrap {
+      position: relative; z-index: 10;
+      padding: 56px 56px 100px;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3px;
+    }
+
+    /* Vary sizes for visual rhythm */
+    .gallery-item {
+      position: relative; overflow: hidden;
+      background: rgba(232,240,245,0.03);
+      cursor: none;
+    }
+    .gallery-item.wide { grid-column: span 2; }
+    .gallery-item.tall { grid-row: span 2; }
+
+    .gallery-item.hidden { display: none; }
+
+    .gallery-thumb {
+      width: 100%; height: 100%;
+      min-height: 280px;
+      display: block; position: relative; overflow: hidden;
+    }
+    .gallery-item.wide .gallery-thumb { min-height: 280px; }
+    .gallery-item.tall .gallery-thumb { min-height: 563px; }
+
+    /* SVG placeholder art */
+    .gallery-thumb svg {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+    }
+
+    .gallery-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(13,27,42,0.95) 0%, rgba(13,27,42,0.2) 50%, transparent 100%);
+      opacity: 0; transition: opacity 0.4s ease;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 24px;
+    }
+    .gallery-item:hover .gallery-overlay { opacity: 1; }
+    .gallery-item:hover .gallery-thumb-inner { transform: scale(1.04); }
+
+    .gallery-thumb-inner {
+      width: 100%; height: 100%;
+      transition: transform 0.7s ease;
+      position: absolute; inset: 0;
+    }
+
+    .gallery-tag {
+      font-size: 0.68rem; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--aurora-green); margin-bottom: 6px;
+    }
+    .gallery-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem; font-weight: 400; line-height: 1.3; margin-bottom: 4px;
+    }
+    .gallery-meta {
+      font-size: 0.75rem; letter-spacing: 0.08em; color: rgba(232,240,245,0.4);
+    }
+
+    /* LIGHTBOX */
+    .lightbox {
+      position: fixed; inset: 0; z-index: 500;
+      background: rgba(7,14,23,0.97);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+    .lightbox.open { opacity: 1; pointer-events: all; }
+
+    .lightbox-inner {
+      position: relative; max-width: 900px; width: 90%;
+      transform: translateY(20px); transition: transform 0.35s ease;
+    }
+    .lightbox.open .lightbox-inner { transform: translateY(0); }
+
+    .lightbox-art {
+      width: 100%; aspect-ratio: 4/3;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .lightbox-art svg { width: 100%; height: 100%; position: absolute; inset: 0; }
+
+    .lightbox-info {
+      padding: 24px 0 0;
+      display: flex; align-items: baseline; justify-content: space-between; gap: 20px;
+    }
+    .lightbox-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem; font-weight: 400;
+    }
+    .lightbox-meta {
+      font-size: 0.85rem; font-style: italic; color: rgba(232,240,245,0.4);
+      white-space: nowrap;
+    }
+
+    .lightbox-close {
+      position: absolute; top: -48px; right: 0;
+      font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: rgba(232,240,245,0.4); background: none; border: none;
+      cursor: none; transition: color 0.3s;
+    }
+    .lightbox-close:hover { color: var(--ice); }
+
+    .lightbox-nav {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: none; border: 1px solid rgba(232,240,245,0.15);
+      color: rgba(232,240,245,0.5); width: 44px; height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; cursor: none; transition: all 0.25s;
+    }
+    .lightbox-nav:hover { border-color: var(--aurora-green); color: var(--aurora-green); }
+    .lightbox-prev { left: -64px; }
+    .lightbox-next { right: -64px; }
+
+    /* FOOTER */
+    footer {
+      position: relative; z-index: 10;
+      border-top: 1px solid rgba(232,240,245,0.06);
+      padding: 40px 56px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-logo { font-size: 1rem; font-weight: 600; color: rgba(232,240,245,0.4); }
+    .footer-logo span { color: var(--aurora-green); font-style: italic; }
+    .footer-nav { display: flex; gap: 28px; list-style: none; }
+    .footer-nav a {
+      font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(232,240,245,0.25); text-decoration: none; transition: color 0.3s;
+    }
+    .footer-nav a:hover { color: rgba(232,240,245,0.6); }
+    .footer-copy { font-size: 0.72rem; color: rgba(232,240,245,0.18); }
+
+    /* REVEAL */
+    .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 900px) {
+      nav { padding: 20px 24px; }
+      .nav-links { display: none; }
+      .page-header { padding: 120px 24px 48px; flex-direction: column; align-items: flex-start; }
+      .filter-bar { justify-content: flex-start; }
+      .gallery-wrap { padding: 32px 24px 80px; }
+      .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+      .gallery-item.wide { grid-column: span 1; }
+      .gallery-item.tall { grid-row: span 1; }
+      .gallery-item.tall .gallery-thumb { min-height: 280px; }
+      .lightbox-prev { left: -10px; }
+      .lightbox-next { right: -10px; }
+      footer { flex-direction: column; gap: 16px; text-align: center; padding: 32px 24px; }
+      .footer-nav { flex-wrap: wrap; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <nav>
+    <a href="index.html" class="logo">Norðurljós <span>Manga</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Heim</a></li>
+      <li><a href="translation.html">Þýðingaskrá</a></li>
+      <li><a href="blog.html">Blogg</a></li>
+      <li><a href="gallery.html" class="active">Gallerí</a></li>
+      <li><a href="contact.html">Hafa Samband</a></li>
+    </ul>
+  </nav>
+
+  <header class="page-header">
+    <div class="page-header-left">
+      <h1>Gallerí</h1>
+      <p>Myndir og kápumyndir úr þýðingunum</p>
+    </div>
+    <div class="filter-bar" id="filterBar">
+      <button class="filter-btn active" data-filter="all">Allt</button>
+      <button class="filter-btn" data-filter="cover">Kápur</button>
+      <button class="filter-btn" data-filter="character">Persónur</button>
+      <button class="filter-btn" data-filter="scene">Senur</button>
+      <button class="filter-btn" data-filter="sketch">Skissur</button>
+    </div>
+  </header>
+
+  <main class="gallery-wrap">
+    <div class="gallery-grid" id="galleryGrid">
+
+      <!-- Item 1: tall, cover -->
+      <div class="gallery-item tall reveal" data-category="cover" data-index="0">
+        <div class="gallery-thumb">
+          <div class="gallery-thumb-inner">
+            <svg viewBox="0 0 400 700" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+              <defs>
+                <linearGradient id="g1a" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" style="stop-color:#0a1628"/>
+                  <stop offset="100%" style="stop-color:#1a3040"/>
+                </linearGradient>
+                <radialGradient id="g1b" cx="50%" cy="30%" r="60%">
+                  <stop offset="0%" style="stop-color:#4ecdc4;stop-opacity:0.18"/>
+                  <stop offset="100%" style="stop-color:#4ecdc4;stop-opacity:0"/>
+                </radialGradient>
+              </defs>
+              <rect width="400" height="700" fill="url(#g1a)"/>
+              <ellipse cx="200" cy="180" rx="280" ry="120" fill="url(#g1b)"/>
+              <ellipse cx="160" cy="220" rx="200" ry="80" fill="#7b6fa0" opacity="0.07"/>
+              <path d="M0,500 L70,380 L140,430 L220,300 L300,370 L370,310 L400,370 L400,700 L0,700 Z" fill="#060e18" opacity="0.9"/>
+              <path d="M0,580 L60,500 L140,540 L220,460 L300,510 L370,460 L400,500 L400,700 L0,700 Z" fill="#030810" opacity="0.95"/>
+              <circle cx="80" cy="100" r="1.2" fill="white" opacity="0.5"/>
+              <circle cx="160" cy="60" r="1.8" fill="white" opacity="0.6"/>
+              <circle cx="260" cy="80" r="1" fill="white" opacity="0.4"/>
+              <circle cx="330" cy="40" r="1.5" fill="white" opacity="0.55"/>
+              <circle cx="350" cy="130" r="1" fill="white" opacity="0.35"/>
+              <circle cx="50" cy="170" r="1.2" fill="white" opacity="0.4"/>
+              <!-- figure -->
+              <circle cx="200" cy="330" r="28" fill="#c5dce8" opacity="0.1"/>
+              <path d="M178,358 Q200,400 222,358" fill="#c5dce8" opacity="0.08"/>
+              <!-- aurora band -->
+              <path d="M-20,250 Q100,220 200,240 Q300,260 420,230" stroke="#4ecdc4" stroke-width="1.5" fill="none" opacity="0.25"/>
+              <path d="M-20,260 Q100,235 200,252 Q300,270 420,242" stroke="#4ecdc4" stroke-width="0.8" fill="none" opacity="0.15"/>
+            </svg>
+          </div>
+        </div>
+        <div class="gallery-overlay">
+          <p class="gallery-tag">Kápa</p>
+          <h3 class="gallery-title">Norðurljós Kísuvörður — Bindi 1</h3>
+          <p class="gallery-meta">Kápumynd · 2024</p>
+        </div>
+      </div>
+
+      <!-- Item 2: normal, character -->
+      <div class="gallery-item reveal" data-category="character" data-index="1">
+        <div class="gallery-thumb">
+          <div class="gallery-thumb-inner">
+            <svg viewBox="0 0 400 280" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+              <rect width="400" height="280" fill="#12202e"/>
+              <ellipse cx="200" cy="100" rx="220" ry="80" fill="#c47aa3" opacity="0.08"/>
+              <circle cx="200" cy="120" r="38" fill="#c5dce8" opacity="0.09"/>
+              <path d="M170,158 Q200,200 230,158" fill="#c5dce8" opacity="0.07"/>
+              <circle cx="100" cy="50" r="1" fill="white" opacity="0.4"/>
+              <circle cx="310" cy="30" r="1.4" fill="white" opacity="0.5"/>
+              <circle cx="350" cy="90" r="1" fill="white" opacity="0.3"/>
+            </svg>
+          </div>
+        </div>
+        <div class="gallery-overlay">
+          <p class="gallery-tag">Persóna</p>
+          <h3 class="gallery-title">Kísuvörður</h3>
+          <p class="gallery-meta">Persónumynd · 2024</p>
+        </div>
+      </div>
+
+      <!-- Item 3: normal, scene -->
+      <div class="gallery-item reveal" data-category="scene" data-index="2">
+        <div class="gallery-thumb">
+          <div class="gallery-thumb-inner">
+            <svg viewBox="0 0 400 280" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+              <rect width="400" height="280" fill="#0e1a10"/>
+              <ellipse cx="200" cy="80" rx="240" ry="70" fill="#4ecdc4" opacity="0.07"/>
+              <path d="M0,200 L80,140 L160,170 L240,110 L320,150 L400,120 L400,280 L0,280 Z" fill="#070f08" opacity="0.9"/>
+              <path d="M0,240 L60,200 L140,220 L220,180 L300,210 L380,185 L400,200 L400,280 L0,280 Z" fill="#040a05" opacity="0.95"/>
+              <circle cx="60" cy="50" r="1" fill="white" opacity="0.5"/>
+              <circle cx="180" cy="30" r="1.5" fill="white" opacity="0.45"/>
+              <circle cx="320" cy="55" r="1" fill="white" opacity="0.4"/>
+              <circle cx="370" cy="20" r="1.2" fill="white" opacity="0.55"/>
+              <!-- two silhouettes -->
+              <circle cx="160" cy="155" r="14" fill="#c5dce8" opacity="0.1"/>
+              <circle cx="240" cy="155" r="14" fill="#c5dce8" opacity="0.1"/>
+            </svg>
+          </div>
+        </div>
+        <div class="gallery-overlay">
+          <p class="gallery-tag">Sena</p>
+          <h3 class="gallery-title">Mosavegur — Kafli 4</h3>
+          <p class="gallery-meta">Blaðsíðulist · 2025</p>
+        </div>
+      </div>
+
+      <!-- Item 4: wide, scene -->
+      <div class="gallery-item wide reveal" data-category="scene" data-index="3">
+        <div class="gallery-thumb">
+          <div class="gallery-thumb-inner">
+            <svg viewBox="0 0 800 280" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+              <defs>
+                <linearGradient id="g4" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" style="stop-color:#0d1b2a"/>
+                  <stop offset="50%" style="stop-color:#1a2c40"/>
+                  <stop offset="100%" style="stop-color:#0d1b2a"/>
+                </linearGradient>
+              </defs>
+              <rect width="800" height="280" fill="url(#g4)"/>
+              <ellipse cx="400" cy="80" rx="500" ry="100" fill="#7b6fa0" opacity="0.07"/>
+              <ellipse cx="250" cy="100" rx="300" ry="70" fill="#4ecdc4" opacity="0.05"/>
+              <path d="M0,200 L100,150 L200,170 L300,120 L400,155 L500,110 L600,145 L700,115 L800,140 L800,280 L0,280 Z" fill="#06111a" opacity="0.88"/>
+              <path d="M0,240 L80,210 L180,228 L280,200 L400,220 L520,198 L640,215 L760,200 L800,210 L800,280 L0,280 Z" fill="#040c14" opacity="0.95"/>
+              <!-- aurora sweep -->
+              <path d="M0,130 Q200,100 400,120 Q600,140 800,105" stroke="#4ecdc4" stroke-width="2" fill="none" opacity="0.12"/>
+              <path d="M0,145 Q200,115 400,135 Q600,155 800,120" stroke="#7b6fa0" stroke-width="1" fill="none" opacity="0.1"/>
+              <!-- stars scattered -->
+              <circle cx="50" cy="40" r="1" fill="white" opacity="0.5"/>
+              <circle cx="180" cy="25" r="1.3" fill="white" opacity="0.55"/>
+              <circle cx="350" cy="50" r="1" fill="white" opacity="0.4"/>
+              <circle cx="500" cy="20" r="1.5" fill="white" opacity="0.5"/>
+              <circle cx="660" cy="45" r="1" fill="white" opacity="0.45"/>
+              <circle cx="750" cy="30" r="1.2" fill="white" opacity="0.4"/>
+            </svg>
+          </div>
+        </div>
+        <div class="gallery-overlay">
+          <p class="gallery-tag">Sena</p>
+          <h3 class="gallery-title">Ísalög — Opnusena</h3>
+          <p class="gallery-meta">Tvísíðubreiðmynd · 2024</p>
+        </div>
+      </div>
+
+      <!-- Item 5: normal, sketch -->
+      <div class="gallery-item reveal" data-category="sketch" data-index="4">
+        <div class="gallery-thumb">
+          <div class="gallery-thumb-inner">
+            <svg viewBox="0 0 400 280" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+              <rect width="400" height="280" fill="#111820"/>
+              <!-- sketch lines -->
+              <circle cx="200" cy="110" r="40" fill="none" stroke="#c5dce8" stroke-width="0.8" opacity="0.2"/>
+              <line x1="200" y1="150" x2="200" y2="230" stroke="#c5dce8" stroke-width="0.7" opacity="0.18"/>
+              <line x1="160" y1="175" x2="240" y2="175" stroke="#c5dce8" stroke-width="0.7" opacity="0.18"/>
+              <path d="M170,200 Q180,230 200,240 Q220,230 230,200" fill="none" stroke="#c5dce8" stroke-width="0.7" opacity="0.15"/>
+              <!-- rough cross-hatch suggestion -->
+              <line x1="60" y1="30" x2="100" y2="60" stroke="#c5dce8" stroke-width="0.5" opacity="0.1"/>
+              <line x1="70" y1="30" x2="110" y2="60" stroke="#c5dce8" stroke-width="0.5" opacity="0.1"/>
+              <line x1="300" y1="220" x2="360" y2="260" stroke="#c5dce8" stroke-width="0.5" opacity="0.1"/>
+              <line x1="310" y1="220" x2="370" y2="260" stroke="#c5dce8" stroke-width="0.5" opacity="0.1"/>
+              <text x="200" y="265" text-anchor="middle" font-family="serif" font-size="9" fill="rgba(232,240,245,0.15)" letter-spacing="2">SKISSA</text>
+            </svg>
+          </div>
+        </div>
+        <div class="gallery-overlay">
+          <p class="gallery-tag">Skissa</p>
+          <h3 class="gallery-title">Persónuskissa — Ísalög</h3>
+          <p class="gallery-meta">Blyantsskissa · 2024</p>
+        </div>
+      </div>
+
+      <!-- Item 6: normal, cover -->
+      <div class="gallery-item reveal" data-category="cover" data-index="5">
+        <div class="gallery-thumb">
+          <div class="gallery-thumb-inner">
+            <svg viewBox="0 0 400 280" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+              <rect width="400" height="280" fill="#0e0818"/>
+              <ellipse cx="200" cy="80" rx="260" ry="90" fill="#c47aa3" opacity="0.09"/>
+              <ellipse cx="150" cy="110" rx="180" ry="60" fill="#7b6fa0" opacity="0.07"/>
+              <path d="M0,200 L80,160 L160,185 L240,140 L320,170 L400,145 L400,280 L0,280 Z" fill="#08040f" opacity="0.92"/>
+              <circle cx="70" cy="50" r="1.2" fill="white" opacity="0.5"/>
+              <circle cx="200" cy="25" r="1.5" fill="white" opacity="0.55"/>
+              <circle cx="340" cy="60" r="1" fill="white" opacity="0.4"/>
+            </svg>
+          </div>
+        </div>
+        <div class="gallery-overlay">
+          <p class="gallery-tag">Kápa</p>
+          <h3 class="gallery-title">Mosavegur — Bindi 1</h3>
+          <p class="gallery-meta">Kápumynd · 2025</p>
+        </div>
+      </div>
+
+      <!-- Item 7: normal, character -->
+      <div class="gallery-item reveal" data-category="character" data-index="6">
+        <div class="gallery-thumb">
+          <div class="gallery-thumb-inner">
+            <svg viewBox="0 0 400 280" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+              <rect width="400" height="280" fill="#0d1a10"/>
+              <ellipse cx="200" cy="90" rx="230" ry="75" fill="#4ecdc4" opacity="0.07"/>
+              <circle cx="200" cy="115" r="35" fill="#c5dce8" opacity="0.09"/>
+              <path d="M172,150 Q200,188 228,150" fill="#c5dce8" opacity="0.07"/>
+              <circle cx="90" cy="40" r="1" fill="white" opacity="0.4"/>
+              <circle cx="300" cy="55" r="1.3" fill="white" opacity="0.5"/>
+            </svg>
+          </div>
+        </div>
+        <div class="gallery-overlay">
+          <p class="gallery-tag">Persóna</p>
+          <h3 class="gallery-title">Söguhetjan — Mosavegur</h3>
+          <p class="gallery-meta">Persónumynd · 2025</p>
+        </div>
+      </div>
+
+      <!-- Item 8: normal, sketch -->
+      <div class="gallery-item reveal" data-category="sketch" data-index="7">
+        <div class="gallery-thumb">
+          <div class="gallery-thumb-inner">
+            <svg viewBox="0 0 400 280" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+              <rect width="400" height="280" fill="#101520"/>
+              <path d="M100,60 Q150,40 200,65 Q250,90 300,55" fill="none" stroke="#c5dce8" stroke-width="0.8" opacity="0.18"/>
+              <path d="M110,80 Q160,58 210,83 Q260,108 310,73" fill="none" stroke="#c5dce8" stroke-width="0.5" opacity="0.12"/>
+              <circle cx="200" cy="140" r="50" fill="none" stroke="#4ecdc4" stroke-width="0.6" opacity="0.15"/>
+              <line x1="200" y1="90" x2="200" y2="60" stroke="#c5dce8" stroke-width="0.6" opacity="0.12"/>
+              <path d="M150,190 L200,230 L250,190" fill="none" stroke="#c5dce8" stroke-width="0.7" opacity="0.15"/>
+              <text x="200" y="265" text-anchor="middle" font-family="serif" font-size="9" fill="rgba(232,240,245,0.12)" letter-spacing="2">UPPKAST</text>
+            </svg>
+          </div>
+        </div>
+        <div class="gallery-overlay">
+          <p class="gallery-tag">Skissa</p>
+          <h3 class="gallery-title">Uppkast — Kísuvörður 2</h3>
+          <p class="gallery-meta">Uppkastsblað · 2024</p>
+        </div>
+      </div>
+
+      <!-- Item 9: wide, scene -->
+      <div class="gallery-item wide reveal" data-category="scene" data-index="8">
+        <div class="gallery-thumb">
+          <div class="gallery-thumb-inner">
+            <svg viewBox="0 0 800 280" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+              <rect width="800" height="280" fill="#0d1520"/>
+              <ellipse cx="400" cy="100" rx="500" ry="90" fill="#c47aa3" opacity="0.06"/>
+              <ellipse cx="300" cy="80" rx="350" ry="65" fill="#7b6fa0" opacity="0.06"/>
+              <path d="M0,210 L120,160 L250,185 L380,130 L500,170 L620,135 L750,160 L800,145 L800,280 L0,280 Z" fill="#07101a" opacity="0.9"/>
+              <path d="M0,250 L100,225 L220,240 L360,215 L480,235 L620,212 L760,230 L800,220 L800,280 L0,280 Z" fill="#050d16" opacity="0.95"/>
+              <circle cx="80" cy="50" r="1.2" fill="white" opacity="0.5"/>
+              <circle cx="250" cy="30" r="1" fill="white" opacity="0.45"/>
+              <circle cx="430" cy="55" r="1.4" fill="white" opacity="0.5"/>
+              <circle cx="600" cy="25" r="1" fill="white" opacity="0.4"/>
+              <circle cx="720" cy="60" r="1.2" fill="white" opacity="0.45"/>
+              <!-- aurora -->
+              <path d="M0,115 Q200,90 400,108 Q600,126 800,95" stroke="#4ecdc4" stroke-width="2.5" fill="none" opacity="0.1"/>
+              <path d="M0,125 Q200,100 400,118 Q600,136 800,105" stroke="#7b6fa0" stroke-width="1.2" fill="none" opacity="0.08"/>
+              <!-- three figures -->
+              <circle cx="300" cy="168" r="12" fill="#c5dce8" opacity="0.1"/>
+              <circle cx="400" cy="163" r="12" fill="#c5dce8" opacity="0.1"/>
+              <circle cx="500" cy="168" r="12" fill="#c5dce8" opacity="0.1"/>
+            </svg>
+          </div>
+        </div>
+        <div class="gallery-overlay">
+          <p class="gallery-tag">Sena</p>
+          <h3 class="gallery-title">Kísuvörður — Lokaþáttur</h3>
+          <p class="gallery-meta">Tvísíðubreiðmynd · 2024</p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox" id="lightbox">
+    <div class="lightbox-inner">
+      <button class="lightbox-close" id="lightboxClose">Loka ✕</button>
+      <button class="lightbox-nav lightbox-prev" id="lightboxPrev">‹</button>
+      <button class="lightbox-nav lightbox-next" id="lightboxNext">›</button>
+      <div class="lightbox-art" id="lightboxArt"></div>
+      <div class="lightbox-info">
+        <h2 class="lightbox-title" id="lightboxTitle"></h2>
+        <p class="lightbox-meta" id="lightboxMeta"></p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-logo">Norðurljós <span>Manga</span></div>
+    <ul class="footer-nav">
+      <li><a href="index.html">Heim</a></li>
+      <li><a href="translation.html">Þýðingaskrá</a></li>
+      <li><a href="blog.html">Blogg</a></li>
+      <li><a href="gallery.html">Gallerí</a></li>
+      <li><a href="contact.html">Hafa Samband</a></li>
+    </ul>
+    <p class="footer-copy">© 2025 Norðurljós Manga</p>
+  </footer>
+
+  <script>
+    // ---- Cursor ----
+    const cursor = document.getElementById('cursor');
+    const ring   = document.getElementById('cursorRing');
+    let mx=0,my=0,rx=0,ry=0;
+    document.addEventListener('mousemove', e => {
+      mx=e.clientX; my=e.clientY;
+      cursor.style.left=mx-5+'px'; cursor.style.top=my-5+'px';
+    });
+    (function animateRing(){
+      rx+=(mx-rx)*0.12; ry+=(my-ry)*0.12;
+      ring.style.left=rx-18+'px'; ring.style.top=ry-18+'px';
+      requestAnimationFrame(animateRing);
+    })();
+    document.querySelectorAll('a,button,.gallery-item,.filter-btn').forEach(el=>{
+      el.addEventListener('mouseenter',()=>{ cursor.style.transform='scale(2)'; cursor.style.background='#7b6fa0'; ring.style.width='52px'; ring.style.height='52px'; ring.style.borderColor='rgba(123,111,160,0.35)'; });
+      el.addEventListener('mouseleave',()=>{ cursor.style.transform='scale(1)'; cursor.style.background='#4ecdc4'; ring.style.width='36px'; ring.style.height='36px'; ring.style.borderColor='rgba(78,205,196,0.4)'; });
+    });
+
+    // ---- Filter ----
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const items = document.querySelectorAll('.gallery-item');
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const f = btn.dataset.filter;
+        items.forEach(item => {
+          const show = f === 'all' || item.dataset.category === f;
+          item.classList.toggle('hidden', !show);
+        });
+      });
+    });
+
+    // ---- Lightbox ----
+    const lightbox = document.getElementById('lightbox');
+    const lbArt    = document.getElementById('lightboxArt');
+    const lbTitle  = document.getElementById('lightboxTitle');
+    const lbMeta   = document.getElementById('lightboxMeta');
+
+    let currentIndex = 0;
+    const allItems = Array.from(items);
+
+    function openLightbox(index) {
+      const item = allItems[index];
+      currentIndex = index;
+      const svg = item.querySelector('.gallery-thumb-inner svg').cloneNode(true);
+      lbArt.innerHTML = '';
+      lbArt.appendChild(svg);
+      lbTitle.textContent = item.querySelector('.gallery-title').textContent;
+      lbMeta.textContent  = item.querySelector('.gallery-meta').textContent;
+      lightbox.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function getVisibleItems() {
+      return allItems.filter(i => !i.classList.contains('hidden'));
+    }
+
+    allItems.forEach((item, i) => {
+      item.addEventListener('click', () => openLightbox(i));
+    });
+
+    document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', e => { if(e.target === lightbox) closeLightbox(); });
+
+    document.getElementById('lightboxPrev').addEventListener('click', e => {
+      e.stopPropagation();
+      const visible = getVisibleItems();
+      const ci = visible.indexOf(allItems[currentIndex]);
+      const prev = visible[(ci - 1 + visible.length) % visible.length];
+      openLightbox(allItems.indexOf(prev));
+    });
+    document.getElementById('lightboxNext').addEventListener('click', e => {
+      e.stopPropagation();
+      const visible = getVisibleItems();
+      const ci = visible.indexOf(allItems[currentIndex]);
+      const next = visible[(ci + 1) % visible.length];
+      openLightbox(allItems.indexOf(next));
+    });
+
+    document.addEventListener('keydown', e => {
+      if (!lightbox.classList.contains('open')) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft')  document.getElementById('lightboxPrev').click();
+      if (e.key === 'ArrowRight') document.getElementById('lightboxNext').click();
+    });
+
+    // ---- Reveal ----
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach((e,i) => {
+        if(e.isIntersecting) setTimeout(()=>e.target.classList.add('visible'), i*60);
+      });
+    }, {threshold:0.08});
+    document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+  </script>
+</body>
+</html>
