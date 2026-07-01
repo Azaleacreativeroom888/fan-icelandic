@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Þýðingaskrá — Norðurljós Manga</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --ice: #e8f0f5;
+      --midnight: #0d1b2a;
+      --deep: #08121e;
+      --aurora-green: #4ecdc4;
+      --aurora-violet: #7b6fa0;
+      --aurora-pink: #c47aa3;
+      --card-bg: rgba(232,240,245,0.04);
+      --border: rgba(232,240,245,0.08);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--midnight);
+      color: var(--ice);
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    .cursor {
+      width: 10px; height: 10px;
+      background: var(--aurora-green); border-radius: 50%;
+      position: fixed; pointer-events: none; z-index: 9999;
+      transition: transform 0.15s ease, background 0.3s ease;
+      mix-blend-mode: screen;
+    }
+    .cursor-ring {
+      width: 36px; height: 36px;
+      border: 1px solid rgba(78,205,196,0.4); border-radius: 50%;
+      position: fixed; pointer-events: none; z-index: 9998;
+      transition: width 0.3s ease, height 0.3s ease, border-color 0.3s ease;
+    }
+
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background: radial-gradient(ellipse at 15% 0%, rgba(78,205,196,0.05) 0%, transparent 55%),
+                  radial-gradient(ellipse at 85% 100%, rgba(123,111,160,0.05) 0%, transparent 55%);
+      pointer-events: none; z-index: 0;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 28px 56px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      background: rgba(13,27,42,0.6);
+    }
+    .logo {
+      font-size: 1.3rem; font-weight: 600; letter-spacing: 0.04em;
+      color: var(--ice); text-decoration: none;
+    }
+    .logo span { color: var(--aurora-green); font-style: italic; }
+    .nav-links { display: flex; gap: 48px; list-style: none; }
+    .nav-links a {
+      font-size: 0.9rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(232,240,245,0.55); text-decoration: none; transition: color 0.3s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -4px; left: 0;
+      width: 0; height: 1px; background: var(--aurora-green); transition: width 0.3s;
+    }
+    .nav-links a:hover { color: var(--ice); }
+    .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+    .nav-links a.active { color: var(--ice); }
+
+    /* PAGE HEADER */
+    .page-header {
+      position: relative; z-index: 10;
+      padding: 160px 56px 64px;
+      border-bottom: 1px solid var(--border);
+    }
+    .page-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.8rem, 6vw, 5rem); font-weight: 700;
+      letter-spacing: -0.02em; line-height: 1; margin-bottom: 10px;
+    }
+    .page-header p {
+      font-size: 1.1rem; font-style: italic; color: rgba(232,240,245,0.4);
+    }
+
+    /* FILTER */
+    .filter-bar {
+      position: relative; z-index: 10;
+      padding: 28px 56px;
+      display: flex; gap: 6px; flex-wrap: wrap;
+      border-bottom: 1px solid var(--border);
+    }
+    .filter-btn {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.82rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: rgba(232,240,245,0.45);
+      background: transparent;
+      border: 1px solid rgba(232,240,245,0.1);
+      padding: 7px 20px; cursor: none;
+      transition: all 0.25s ease;
+    }
+    .filter-btn:hover { color: var(--ice); border-color: rgba(232,240,245,0.3); }
+    .filter-btn.active {
+      color: var(--midnight); background: var(--aurora-green);
+      border-color: var(--aurora-green);
+    }
+
+    /* MAIN */
+    main {
+      position: relative; z-index: 10;
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 64px 56px 120px;
+      display: flex; flex-direction: column; gap: 3px;
+    }
+
+    /* ENTRY CARD */
+    .entry-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease, background 0.3s ease;
+    }
+    .entry-card.visible { opacity: 1; transform: translateY(0); }
+    .entry-card:hover { background: rgba(232,240,245,0.06); }
+    .entry-card.hidden { display: none; }
+
+    .entry-header {
+      padding: 20px 28px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: baseline;
+      justify-content: space-between; gap: 16px;
+    }
+    .entry-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem; font-weight: 400; line-height: 1.3;
+    }
+    .entry-tag {
+      font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase;
+      white-space: nowrap; flex-shrink: 0;
+      color: var(--aurora-green);
+      border: 1px solid rgba(78,205,196,0.3);
+      padding: 4px 12px;
+    }
+    .entry-tag.violet { color: var(--aurora-violet); border-color: rgba(123,111,160,0.3); }
+    .entry-tag.pink   { color: var(--aurora-pink);   border-color: rgba(196,122,163,0.3); }
+
+    .entry-body { padding: 0; }
+
+    .entry-section {
+      padding: 18px 28px;
+      border-bottom: 1px solid rgba(232,240,245,0.05);
+    }
+    .entry-section:last-child { border-bottom: none; }
+
+    .section-label {
+      font-size: 0.7rem; letter-spacing: 0.22em; text-transform: uppercase;
+      color: rgba(232,240,245,0.3); margin-bottom: 10px;
+    }
+
+    .entry-section p {
+      font-size: 1rem; line-height: 1.85; color: rgba(232,240,245,0.72);
+    }
+    .entry-section p + p { margin-top: 0.6em; }
+    .entry-section strong { color: var(--aurora-green); font-weight: 400; }
+
+    .entry-section.memo {
+      background: rgba(78,205,196,0.03);
+      border-left: 2px solid rgba(78,205,196,0.2);
+    }
+    .entry-section.memo .section-label { color: var(--aurora-green); }
+    .entry-section.memo p { font-size: 0.92rem; color: rgba(232,240,245,0.55); }
+
+    /* FOOTER */
+    footer {
+      position: relative; z-index: 10;
+      border-top: 1px solid var(--border);
+      padding: 40px 56px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-logo { font-size: 1rem; font-weight: 600; color: rgba(232,240,245,0.35); }
+    .footer-logo span { color: var(--aurora-green); font-style: italic; }
+    .footer-nav { display: flex; gap: 28px; list-style: none; }
+    .footer-nav a {
+      font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(232,240,245,0.25); text-decoration: none; transition: color 0.3s;
+    }
+    .footer-nav a:hover { color: rgba(232,240,245,0.6); }
+    .footer-copy { font-size: 0.72rem; color: rgba(232,240,245,0.18); }
+
+    @media (max-width: 768px) {
+      nav { padding: 20px 24px; }
+      .nav-links { display: none; }
+      .page-header { padding: 120px 24px 48px; }
+      .filter-bar { padding: 20px 24px; }
+      main { padding: 40px 24px 80px; }
+      .entry-header { flex-direction: column; gap: 8px; }
+      footer { flex-direction: column; gap: 16px; text-align: center; padding: 32px 24px; }
+      .footer-nav { flex-wrap: wrap; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <nav>
+    <a href="index.html" class="logo">Norðurljós <span>Manga</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Heim</a></li>
+      <li><a href="translation.html" class="active">Þýðingaskrá</a></li>
+      <li><a href="blog.html">Blogg</a></li>
+      <li><a href="gallery.html">Gallerí</a></li>
+      <li><a href="contact.html">Hafa Samband</a></li>
+    </ul>
+  </nav>
+
+  <header class="page-header">
+    <h1>Þýðingaskrá</h1>
+    <p>Orð, setningar og þýðingarval — skráð með athugasemdum</p>
+  </header>
+
+  <div class="filter-bar" id="filterBar">
+    <button class="filter-btn active" data-filter="all">Allt</button>
+    <button class="filter-btn" data-filter="word">Orð</button>
+    <button class="filter-btn" data-filter="translation">Þýðing</button>
+    <button class="filter-btn" data-filter="note">Minnisatriði</button>
+  </div>
+
+  <main id="entryList">
+
+    <div class="entry-card" data-category="translation">
+      <div class="entry-header">
+        <h2>„Hvernig þýðum við þetta?"</h2>
+        <span class="entry-tag">Þýðing</span>
+      </div>
+      <div class="entry-body">
+        <div class="entry-section">
+          <div class="section-label">Frumtexti</div>
+          <p>Time. How it passes, from moment to moment. Haven't you ever noticed how some things change when you aren't looking at them?</p>
+        </div>
+        <div class="entry-section">
+          <div class="section-label">Þýðing</div>
+          <p>Tíminn. Hvernig hann líður, frá augnabliki til augnabliks. Hefurðu aldrei tekið eftir því hvernig sumt breytist þegar þú horfir ekki á það?</p>
+        </div>
+        <div class="entry-section memo">
+          <div class="section-label">Athugasemd</div>
+          <p>„moment to moment" — „frá augnabliki til augnabliks" er nákvæmara en „stigi af stigi".<br>
+          Í þessari sögu tákna augnablikin aðskilin tímabil, eins og rammarnir í myndasögunni.<br>
+          <strong>„change"</strong> er ekki þátíð — þetta var kæruleysismistök í fyrstu þýðingu.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="entry-card" data-category="word">
+      <div class="entry-header">
+        <h2>stigma</h2>
+        <span class="entry-tag violet">Orð</span>
+      </div>
+      <div class="entry-body">
+        <div class="entry-section">
+          <div class="section-label">Merking</div>
+          <p>Neikvæð félagsleg viðhorf gagnvart ákveðnum einkennum eða stöðu — „social stigma" (félagslegt fordæmi).</p>
+          <p>Dæmi: <strong>the stigma around mental illness</strong> — fordæmið sem fylgir geðveikindum.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="entry-card" data-category="translation">
+      <div class="entry-header">
+        <h2>„Hvernig þýðum við þetta?" #2</h2>
+        <span class="entry-tag">Þýðing</span>
+      </div>
+      <div class="entry-body">
+        <div class="entry-section">
+          <div class="section-label">Frumtexti</div>
+          <p>Solipsistic delusions are frequently merely the initial manifestation of a general insensitivity to legitimacy.</p>
+        </div>
+        <div class="entry-section">
+          <div class="section-label">Þýðing</div>
+          <p>Sjálfshverfa ranghugmyndir eru oft aðeins fyrstu einkenni almennrar óhneigðni til að viðurkenna gildi annarra.</p>
+        </div>
+        <div class="entry-section memo">
+          <div class="section-label">Athugasemd</div>
+          <p>„solipsistic" — <strong>„sjálfshverfur"</strong> er nákvæmara en „eigingjarn" (vísar til heimspekilegrar stöðu um að aðeins eigið meðvitund sé raunveruleg).<br>
+          „initial manifestation" = fyrstu einkenni.<br>
+          „general" — „almenn" var valin að lokum en veldur enn nokkrum efasemdum.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="entry-card" data-category="word">
+      <div class="entry-header">
+        <h2>pseudo-</h2>
+        <span class="entry-tag violet">Orð</span>
+      </div>
+      <div class="entry-body">
+        <div class="entry-section">
+          <div class="section-label">Merking</div>
+          <p>Forskeytið „pseudo-" þýðir <strong>„skyn-, gervi-, falskur"</strong>.<br>
+          „pseudo-famous" — þekkt að nafni en ekki í raun og veru.<br>
+          „pseudonym" — dulnefni, skálnafn.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="entry-card" data-category="note">
+      <div class="entry-header">
+        <h2>„Thank you." sem lokaboð</h2>
+        <span class="entry-tag pink">Minnisatriði</span>
+      </div>
+      <div class="entry-body">
+        <div class="entry-section">
+          <div class="section-label">Athugasemd</div>
+          <p>Í bandarískri ensku getur „Thank you." verið kaldhæðnislegt — „þakka þér fyrir að segja mér þetta sem ég vissi nú þegar."</p>
+          <p>Það þjónar oft sem <strong>lokaboð</strong> — merki um að samtalið sé lokið.</p>
+          <p>Í staðinn er „I will try that." eða „You have a point." algengara sem aufúsalegt svar sem sýnir virðingu.</p>
+          <p>Í ensku er <strong>acknowledgement</strong> (viðurkenning) oft mikilvægara en formleg þakkir.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="entry-card" data-category="translation">
+      <div class="entry-header">
+        <h2>„Hvernig þýðum við þetta?" #3</h2>
+        <span class="entry-tag">Þýðing</span>
+      </div>
+      <div class="entry-body">
+        <div class="entry-section">
+          <div class="section-label">Frumtexti</div>
+          <p>The protagonist kept drawing, even when no one believed in her story.</p>
+        </div>
+        <div class="entry-section">
+          <div class="section-label">Þýðing</div>
+          <p>Söguhetjan hélt áfram að teikna, jafnvel þegar enginn trúði sögu hennar.</p>
+        </div>
+        <div class="entry-section memo">
+          <div class="section-label">Athugasemd</div>
+          <p>„believed in" — <strong>„trúði sögu hennar"</strong> fangar bæði trúna og stuðninginn.<br>
+          „even when" = <strong>„jafnvel þegar"</strong> — þetta er kjarninn í setningunni, andstæðan milli einveru og þrautseigju.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="entry-card" data-category="note">
+      <div class="entry-header">
+        <h2>Uppruni orðsins „alphabet"</h2>
+        <span class="entry-tag pink">Minnisatriði</span>
+      </div>
+      <div class="entry-body">
+        <div class="entry-section">
+          <div class="section-label">Athugasemd</div>
+          <p>Fyrstu tvær stafirnar í grískan eru <strong>α (alpha)</strong> og <strong>β (beta)</strong> — saman mynda þær orðið „alphabet".</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    <div class="footer-logo">Norðurljós <span>Manga</span></div>
+    <ul class="footer-nav">
+      <li><a href="index.html">Heim</a></li>
+      <li><a href="translation.html">Þýðingaskrá</a></li>
+      <li><a href="blog.html">Blogg</a></li>
+      <li><a href="gallery.html">Gallerí</a></li>
+      <li><a href="contact.html">Hafa Samband</a></li>
+    </ul>
+    <p class="footer-copy">© 2025 Norðurljós Manga</p>
+  </footer>
+
+  <script>
+    // Cursor
+    const cursor = document.getElementById('cursor');
+    const ring   = document.getElementById('cursorRing');
+    let mx=0,my=0,rx=0,ry=0;
+    document.addEventListener('mousemove', e => {
+      mx=e.clientX; my=e.clientY;
+      cursor.style.left=mx-5+'px'; cursor.style.top=my-5+'px';
+    });
+    (function animateRing(){
+      rx+=(mx-rx)*0.12; ry+=(my-ry)*0.12;
+      ring.style.left=rx-18+'px'; ring.style.top=ry-18+'px';
+      requestAnimationFrame(animateRing);
+    })();
+    document.querySelectorAll('a,button,.entry-card').forEach(el=>{
+      el.addEventListener('mouseenter',()=>{ cursor.style.transform='scale(2)'; cursor.style.background='#7b6fa0'; ring.style.width='52px'; ring.style.height='52px'; ring.style.borderColor='rgba(123,111,160,0.35)'; });
+      el.addEventListener('mouseleave',()=>{ cursor.style.transform='scale(1)'; cursor.style.background='#4ecdc4'; ring.style.width='36px'; ring.style.height='36px'; ring.style.borderColor='rgba(78,205,196,0.4)'; });
+    });
+
+    // Filter
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const f = btn.dataset.filter;
+        document.querySelectorAll('.entry-card').forEach(card => {
+          card.classList.toggle('hidden', f !== 'all' && card.dataset.category !== f);
+        });
+      });
+    });
+
+    // Reveal
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 80);
+      });
+    }, { threshold: 0.05 });
+    document.querySelectorAll('.entry-card').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
